@@ -1,0 +1,17 @@
+.name {
+  margin: 25px;
+}
+
+#search_input{
+    width: 300px;
+}
+
+.search-field {
+  display: flex;
+  margin-left: 400px;
+}
+
+#search_button {
+  margin-left: 10px;
+  margin-right: 10px;
+}

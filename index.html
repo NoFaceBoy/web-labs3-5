@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Juicer store</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="name">
+        <h1>Juicers</h1>
+      </div>
+      <div id="search_field" class="search-field">
+        <input placeholder="Input brand to search" id="search_input" />
+        <button id="search_button">Search</button>
+        <button id="clear_button">Clear</button>
+      </div>
+    </header>
+    <main id="main_page">
+      <aside>
+        <div class="container">
+          <div class="sorting-choice">
+            <p class="sort-text">Sort juicers by highest price</p>
+            <input type="checkbox" id="sort_switch" />
+          </div>
+          <div class="count-total">
+            <p>Juicers in stock: <span id="total_stock"></span></p>
+            <button id="count_button">Count</button>
+          </div>
+        </div>
+      </aside>
+      <section id="items">
+        <div class="card" id="juicer-1">
+          <div class="juicer juicer-1-brand">Phillips</div>
+          <div class="juicer-price" id="juicer-1_price">Price - 9000</div>
+          <div class="juicer-stock" id="juicer-1_stock">
+            Juicers in stock: 55
+          </div>
+        </div>
+        <div class="card" id="juicer-2">
+          <div class="juicer juicer-2-brand">Tefal</div>
+          <div class="juicer-price" id="juicer-2_price">Price - 3600</div>
+          <div class="juicer-stock" id="juicer-2_stock">
+            Juicers in stock: 126
+          </div>
+        </div>
+        <div class="card" id="juicer-3">
+          <div class="juicer juicer-3-brand">Bosch</div>
+          <div class="juicer-price" id="juicer-3_price">Price - 11500</div>
+          <div class="juicer-stock" id="juicer-3_stock">
+            Juicers in stock: 39
+          </div>
+        </div>
+        <div class="card" id="juicer-4">
+          <div class="juicer juicer-4-brand">Magio</div>
+          <div class="juicer-price" id="juicer-4_price">Price - 1500</div>
+          <div class="juicer-stock" id="juicer-4_stock">
+            Juicers in stock: 167
+          </div>
+        </div>
+        <div class="card" id="juicer-5">
+          <div class="juicer juicer-5-brand">Tefal</div>
+          <div class="juicer-price" id="juicer-5_price">>Price - 6000</div>
+          <div class="juicer-stock" id="juicer-5_stock">
+            Juicers in stock: 84
+          </div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./js/index.js"></script>
+  </body>
+</html>
