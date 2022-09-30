@@ -22,3 +22,12 @@
 #count_button {
   margin-top: 10px;
 }
+
+.create-form{
+  display: none;
+  justify-content: center;
+}
+
+#edit_button{
+  display: none;
+}
