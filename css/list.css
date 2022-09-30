@@ -13,3 +13,13 @@
 .juicer {
   font-size: 36px;
 }
+
+.item{
+  list-style: none;
+  display: flex;
+}
+
+.items-container{
+  display: flex;
+  flex-wrap: wrap;
+}

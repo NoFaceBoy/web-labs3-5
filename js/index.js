@@ -24,7 +24,8 @@ const options = document.getElementById("aside");
 
 let juicers = [];
 let renderedJuicers = [];
-id = -1;
+id = 0;
+current_id = -1;
 
 const itemTemplate = ({ id, brand, price, stock }) => {
   return `
@@ -117,10 +118,10 @@ const counttotalStock = (juicers) => {
 
 const totalStockTemplate = (totalStock) => `${totalStock}`;
 
-const changeValues = (id) => {
-  juicers[id].brand = brandInput.value;
-  juicers[id].price = priceInput.value;
-  juicers[id].stock = stockInput.value;
+const changeValues = () => {
+  juicers[current_id].brand = brandInput.value;
+  juicers[current_id].price = priceInput.value;
+  juicers[current_id].stock = stockInput.value;
 };
 
 let validation = () => {
@@ -140,28 +141,37 @@ let validation = () => {
 editButton.addEventListener("click", function (event) {
   event.preventDefault();
   if (validation()) {
-    changeValues(id);
+    changeValues(current_id);
     clearInputs();
     toggleHomePage();
+    renderJuicers(juicers);
   }
 });
 
-const editJuicers = () => {
+const editJuicers = (clicked_id) => {
   toggleCreatePage();
+  changeCurrentId(clicked_id);
   title.textContent = "Edit juicer";
   submitButton.style.display = "none";
   editButton.style.display = "block";
 };
 
+function changeCurrentId(id) {
+  current_id = id;
+}
+
 const toggleHomePage = () => {
   options.style.display = "block";
   searchField.style.display = "flex";
-  itemsContainer.style.display = "block";
+  itemsContainer.style.display = "flex";
   createForm.style.display = "none";
   renderJuicers(juicers);
 };
 
 const toggleCreatePage = () => {
+  title.textContent = "Create juicer";
+  submitButton.style.display = "block";
+  editButton.style.display = "none";
   options.style.display = "none";
   searchField.style.display = "none";
   itemsContainer.style.display = "none";
