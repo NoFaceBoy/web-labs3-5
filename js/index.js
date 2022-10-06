@@ -24,8 +24,16 @@ const options = document.getElementById("aside");
 
 let juicers = [];
 let renderedJuicers = [];
-id = 0;
-current_id = -1;
+let current_id;
+
+fetch('http://localhost:5050/', {method: 'GET'}).then(
+    (response) => {
+        response.json().then(
+            (json) => {
+                juicers = json;
+                renderJuicers(juicers);
+            })
+    });
 
 const itemTemplate = ({ id, brand, price, stock }) => {
   return `
@@ -34,19 +42,28 @@ const itemTemplate = ({ id, brand, price, stock }) => {
         <div class=juicer>${brand}</div> 
         <div class="juicer-price">Price - ${price}</div> 
         <div class="juicer-stock">Juicers in stock: ${stock}</div>
-        <button id="edit_button_form" onclick="editJuicers(${id})">Edit</button>
+        <button id="edit_button_form" onclick="editFormButtonOnClick(${id})">Edit</button>
     </div>
   </li>`;
 };
 
-const insertJuicer = ({ brand, price, stock }) => {
+const insertJuicer = () => {
   const juicer = {
-    id: id,
     brand: brandInput.value,
     price: priceInput.value,
     stock: stockInput.value,
-  };
-  id += 1;
+  }
+  fetch('http://localhost:5050/', {
+            method: 'POST',
+            body: JSON.stringify(juicer),
+            headers: {'Content-Type': 'application/json; charset=UTF-8',},
+        }).then(
+            response => {
+                response.json().then(
+                    (json) => {
+                        console.log(json);
+                    })
+            });
   juicers.push(juicer);
   renderedJuicers = juicers;
   clearInputs();
@@ -93,8 +110,8 @@ const clearSearchInput = () => {
 };
 
 searchButton.addEventListener("click", (event) => {
-  const foundJuicers = juicers.filter(
-    (juicer) =>
+  const foundJuicers = juicers.filter(  
+    (juicer) => 
       juicer.brand.toLowerCase().search(searchInput.value.toLowerCase()) !== -1
   );
   clearSearchInput();
@@ -106,7 +123,7 @@ countButton.addEventListener("click", (event) => {
   totalStockDiv.innerHTML = "";
   event.preventDefault();
   console.log(renderedJuicers);
-  counttotalStock(renderedJuicers);
+  counttotalStock(juicers);
 });
 
 const counttotalStock = (juicers) => {
@@ -117,12 +134,6 @@ const counttotalStock = (juicers) => {
 };
 
 const totalStockTemplate = (totalStock) => `${totalStock}`;
-
-const changeValues = () => {
-  juicers[current_id].brand = brandInput.value;
-  juicers[current_id].price = priceInput.value;
-  juicers[current_id].stock = stockInput.value;
-};
 
 let validation = () => {
   if (brandInput.value =="") {
@@ -138,27 +149,49 @@ let validation = () => {
   return true;
 };
 
+const changeValues = (id) => {
+  juicers[id].brand = brandInput.value;
+  juicers[id].price = priceInput.value;
+  juicers[id].stock = stockInput.value;
+};
+
 editButton.addEventListener("click", function (event) {
   event.preventDefault();
   if (validation()) {
-    changeValues(current_id);
+    editJuicer(current_id);
     clearInputs();
     toggleHomePage();
     renderJuicers(juicers);
   }
 });
 
-const editJuicers = (clicked_id) => {
+const editJuicer = (id) =>{
+  const juicer = {
+    brand: brandInput.value,
+    price: priceInput.value,
+    stock: stockInput.value,
+  }
+  fetch(`http://localhost:5050/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(juicer),
+            headers: {'Content-Type': 'application/json; charset=UTF-8',},
+        }).then(
+            response => {
+                response.json().then(
+                    (json) => {
+                        console.log(json);
+                    })
+            });
+  changeValues(id - 1); // Due to list starting from [0]
+}
+
+const editFormButtonOnClick = (id) => {
+  current_id = id;
   toggleCreatePage();
-  changeCurrentId(clicked_id);
   title.textContent = "Edit juicer";
   submitButton.style.display = "none";
   editButton.style.display = "block";
 };
-
-function changeCurrentId(id) {
-  current_id = id;
-}
 
 const toggleHomePage = () => {
   options.style.display = "block";
@@ -189,7 +222,7 @@ homeButton.addEventListener("click", () => {
 submitButton.addEventListener("click", (event) => {
   event.preventDefault();
   if (validation()) {
-    insertJuicer(id);
+    insertJuicer();
     clearInputs;
     toggleHomePage();
   }
