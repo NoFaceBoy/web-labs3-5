@@ -15,6 +15,7 @@ const stockInput = document.getElementById("stock_input");
 const submitButton = document.getElementById("submit_button");
 const editButton = document.getElementById("edit_button");
 const editButtonForm = document.getElementById("edit_button_form");
+const deleteButtonForm = document.getElementById("delete_button_form");
 
 const createButton = document.getElementById("create_button");
 const homeButton = document.getElementById("home_button");
@@ -26,14 +27,16 @@ let juicers = [];
 let renderedJuicers = [];
 let current_id;
 
-fetch('http://localhost:5050/', {method: 'GET'}).then(
-    (response) => {
-        response.json().then(
-            (json) => {
-                juicers = json;
-                renderJuicers(juicers);
-            })
+const getData = () => {
+  fetch("http://localhost:5050/", { method: "GET" }).then((response) => {
+    response.json().then((json) => {
+      juicers = json;
+      renderJuicers(juicers);
     });
+  });
+};
+
+getData();
 
 const itemTemplate = ({ id, brand, price, stock }) => {
   return `
@@ -43,6 +46,7 @@ const itemTemplate = ({ id, brand, price, stock }) => {
         <div class="juicer-price">Price - ${price}</div> 
         <div class="juicer-stock">Juicers in stock: ${stock}</div>
         <button id="edit_button_form" onclick="editFormButtonOnClick(${id})">Edit</button>
+        <button id="delete_button_form" onclick="deleteButtonOnClick(${id})">Delete</button>
     </div>
   </li>`;
 };
@@ -52,18 +56,16 @@ const insertJuicer = () => {
     brand: brandInput.value,
     price: priceInput.value,
     stock: stockInput.value,
-  }
-  fetch('http://localhost:5050/', {
-            method: 'POST',
-            body: JSON.stringify(juicer),
-            headers: {'Content-Type': 'application/json; charset=UTF-8',},
-        }).then(
-            response => {
-                response.json().then(
-                    (json) => {
-                        console.log(json);
-                    })
-            });
+  };
+  fetch("http://localhost:5050/", {
+    method: "POST",
+    body: JSON.stringify(juicer),
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+    });
+  });
   juicers.push(juicer);
   renderedJuicers = juicers;
   clearInputs();
@@ -110,8 +112,8 @@ const clearSearchInput = () => {
 };
 
 searchButton.addEventListener("click", (event) => {
-  const foundJuicers = juicers.filter(  
-    (juicer) => 
+  const foundJuicers = juicers.filter(
+    (juicer) =>
       juicer.brand.toLowerCase().search(searchInput.value.toLowerCase()) !== -1
   );
   clearSearchInput();
@@ -136,7 +138,7 @@ const counttotalStock = (juicers) => {
 const totalStockTemplate = (totalStock) => `${totalStock}`;
 
 let validation = () => {
-  if (brandInput.value =="") {
+  if (!brandInput.value.trim().length) {
     alert("Please fill in the brand name!");
     return false;
   } else if (priceInput.value <= 0) {
@@ -149,41 +151,32 @@ let validation = () => {
   return true;
 };
 
-const changeValues = (id) => {
-  juicers[id].brand = brandInput.value;
-  juicers[id].price = priceInput.value;
-  juicers[id].stock = stockInput.value;
-};
-
 editButton.addEventListener("click", function (event) {
   event.preventDefault();
   if (validation()) {
     editJuicer(current_id);
     clearInputs();
     toggleHomePage();
-    renderJuicers(juicers);
   }
 });
 
-const editJuicer = (id) =>{
+const editJuicer = (id) => {
   const juicer = {
     brand: brandInput.value,
     price: priceInput.value,
     stock: stockInput.value,
-  }
+  };
   fetch(`http://localhost:5050/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(juicer),
-            headers: {'Content-Type': 'application/json; charset=UTF-8',},
-        }).then(
-            response => {
-                response.json().then(
-                    (json) => {
-                        console.log(json);
-                    })
-            });
-  changeValues(id - 1); // Due to list starting from [0]
-}
+    method: "PUT",
+    body: JSON.stringify(juicer),
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+      getData();
+    });
+  });  // Due to list starting from [0]
+};
 
 const editFormButtonOnClick = (id) => {
   current_id = id;
@@ -191,6 +184,21 @@ const editFormButtonOnClick = (id) => {
   title.textContent = "Edit juicer";
   submitButton.style.display = "none";
   editButton.style.display = "block";
+};
+
+const deleteButtonOnClick = (id) => {
+  deleteJuicer(id);
+};
+
+const deleteJuicer = (id) => {
+  fetch(`http://localhost:5050/${id}`, {
+    method: "DELETE",
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+      getData();
+    });
+  });
 };
 
 const toggleHomePage = () => {
