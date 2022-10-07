@@ -64,10 +64,11 @@ const insertJuicer = () => {
   }).then((response) => {
     response.json().then((json) => {
       console.log(json);
+      juicers.push(juicer);
+      renderedJuicers = juicers;
+      getData();
     });
   });
-  juicers.push(juicer);
-  renderedJuicers = juicers;
   clearInputs();
 };
 
@@ -175,7 +176,7 @@ const editJuicer = (id) => {
       console.log(json);
       getData();
     });
-  });  // Due to list starting from [0]
+  });
 };
 
 const editFormButtonOnClick = (id) => {
