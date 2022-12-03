@@ -15,6 +15,7 @@ const stockInput = document.getElementById("stock_input");
 const submitButton = document.getElementById("submit_button");
 const editButton = document.getElementById("edit_button");
 const editButtonForm = document.getElementById("edit_button_form");
+const deleteButtonForm = document.getElementById("delete_button_form");
 
 const createButton = document.getElementById("create_button");
 const homeButton = document.getElementById("home_button");
@@ -24,8 +25,18 @@ const options = document.getElementById("aside");
 
 let juicers = [];
 let renderedJuicers = [];
-id = 0;
-current_id = -1;
+let current_id;
+
+const getData = () => {
+  fetch("http://localhost:5050/", { method: "GET" }).then((response) => {
+    response.json().then((json) => {
+      juicers = json;
+      renderJuicers(juicers);
+    });
+  });
+};
+
+getData();
 
 const itemTemplate = ({ id, brand, price, stock }) => {
   return `
@@ -34,21 +45,30 @@ const itemTemplate = ({ id, brand, price, stock }) => {
         <div class=juicer>${brand}</div> 
         <div class="juicer-price">Price - ${price}</div> 
         <div class="juicer-stock">Juicers in stock: ${stock}</div>
-        <button id="edit_button_form" onclick="editJuicers(${id})">Edit</button>
+        <button id="edit_button_form" onclick="editFormButtonOnClick(${id})">Edit</button>
+        <button id="delete_button_form" onclick="deleteButtonOnClick(${id})">Delete</button>
     </div>
   </li>`;
 };
 
-const insertJuicer = ({ brand, price, stock }) => {
+const insertJuicer = () => {
   const juicer = {
-    id: id,
     brand: brandInput.value,
     price: priceInput.value,
     stock: stockInput.value,
   };
-  id += 1;
-  juicers.push(juicer);
-  renderedJuicers = juicers;
+  fetch("http://localhost:5050/", {
+    method: "POST",
+    body: JSON.stringify(juicer),
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+      juicers.push(juicer);
+      renderedJuicers = juicers;
+      getData();
+    });
+  });
   clearInputs();
 };
 
@@ -106,7 +126,7 @@ countButton.addEventListener("click", (event) => {
   totalStockDiv.innerHTML = "";
   event.preventDefault();
   console.log(renderedJuicers);
-  counttotalStock(renderedJuicers);
+  counttotalStock(juicers);
 });
 
 const counttotalStock = (juicers) => {
@@ -118,14 +138,8 @@ const counttotalStock = (juicers) => {
 
 const totalStockTemplate = (totalStock) => `${totalStock}`;
 
-const changeValues = () => {
-  juicers[current_id].brand = brandInput.value;
-  juicers[current_id].price = priceInput.value;
-  juicers[current_id].stock = stockInput.value;
-};
-
 let validation = () => {
-  if (brandInput.value =="") {
+  if (!brandInput.value.trim().length) {
     alert("Please fill in the brand name!");
     return false;
   } else if (priceInput.value <= 0) {
@@ -141,24 +155,52 @@ let validation = () => {
 editButton.addEventListener("click", function (event) {
   event.preventDefault();
   if (validation()) {
-    changeValues(current_id);
+    editJuicer(current_id);
     clearInputs();
     toggleHomePage();
-    renderJuicers(juicers);
   }
 });
 
-const editJuicers = (clicked_id) => {
+const editJuicer = (id) => {
+  const juicer = {
+    brand: brandInput.value,
+    price: priceInput.value,
+    stock: stockInput.value,
+  };
+  fetch(`http://localhost:5050/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(juicer),
+    headers: { "Content-Type": "application/json; charset=UTF-8" },
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+      getData();
+    });
+  });
+};
+
+const editFormButtonOnClick = (id) => {
+  current_id = id;
   toggleCreatePage();
-  changeCurrentId(clicked_id);
   title.textContent = "Edit juicer";
   submitButton.style.display = "none";
   editButton.style.display = "block";
 };
 
-function changeCurrentId(id) {
-  current_id = id;
-}
+const deleteButtonOnClick = (id) => {
+  deleteJuicer(id);
+};
+
+const deleteJuicer = (id) => {
+  fetch(`http://localhost:5050/${id}`, {
+    method: "DELETE",
+  }).then((response) => {
+    response.json().then((json) => {
+      console.log(json);
+      getData();
+    });
+  });
+};
 
 const toggleHomePage = () => {
   options.style.display = "block";
@@ -189,7 +231,7 @@ homeButton.addEventListener("click", () => {
 submitButton.addEventListener("click", (event) => {
   event.preventDefault();
   if (validation()) {
-    insertJuicer(id);
+    insertJuicer();
     clearInputs;
     toggleHomePage();
   }
