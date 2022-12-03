@@ -12,6 +12,12 @@
       <div class="name">
         <h1>Juicers</h1>
       </div>
+      <nav>
+        <ul class="navigation">
+            <li><button class="nav-button" id="home_button">Home</button></li>
+            <li><button class="nav-button " id="create_button">Create</button></li>
+        </ul>
+    </nav>
       <div id="search_field" class="search-field">
         <input placeholder="Input brand to search" id="search_input" />
         <button id="search_button">Search</button>
@@ -19,7 +25,26 @@
       </div>
     </header>
     <main id="main_page">
-      <aside>
+      <form class="create-form" id="create_form">
+        <div class="tittle-wrapper">
+            <h3 class="title" id="title">Create juicer</h3>
+        </div>
+        <div class="input-wrapper">
+            <label class="form-label">Brand</label>
+            <input type="text" class="form-input" id="brand_input">
+        </div>
+        <div class="input-wrapper">
+            <label class="form-label">Price</label>
+            <input type="number" class="form-input" id="price_input">
+        </div>
+        <div class="input-wrapper">
+            <label class="form-label">Stock</label>
+            <input type="number" class="form-input" id="stock_input">
+        </div>
+        <button class="submit-button" type="submit" id="submit_button">Submit</button>
+        <button class="submit-button" id="edit_button">Edit</button>
+    </form>
+      <aside id="aside">
         <div class="container">
           <div class="sorting-choice">
             <p class="sort-text">Sort juicers by highest price</p>
@@ -31,44 +56,12 @@
           </div>
         </div>
       </aside>
-      <section id="items">
-        <div class="card" id="juicer-1">
-          <div class="juicer juicer-1-brand">Phillips</div>
-          <div class="juicer-price" id="juicer-1_price">Price - 9000</div>
-          <div class="juicer-stock" id="juicer-1_stock">
-            Juicers in stock: 55
-          </div>
-        </div>
-        <div class="card" id="juicer-2">
-          <div class="juicer juicer-2-brand">Tefal</div>
-          <div class="juicer-price" id="juicer-2_price">Price - 3600</div>
-          <div class="juicer-stock" id="juicer-2_stock">
-            Juicers in stock: 126
-          </div>
-        </div>
-        <div class="card" id="juicer-3">
-          <div class="juicer juicer-3-brand">Bosch</div>
-          <div class="juicer-price" id="juicer-3_price">Price - 11500</div>
-          <div class="juicer-stock" id="juicer-3_stock">
-            Juicers in stock: 39
-          </div>
-        </div>
-        <div class="card" id="juicer-4">
-          <div class="juicer juicer-4-brand">Magio</div>
-          <div class="juicer-price" id="juicer-4_price">Price - 1500</div>
-          <div class="juicer-stock" id="juicer-4_stock">
-            Juicers in stock: 167
-          </div>
-        </div>
-        <div class="card" id="juicer-5">
-          <div class="juicer juicer-5-brand">Tefal</div>
-          <div class="juicer-price" id="juicer-5_price">>Price - 6000</div>
-          <div class="juicer-stock" id="juicer-5_stock">
-            Juicers in stock: 84
-          </div>
-        </div>
-      </section>
+      <section class="items-section">
+        <ul class="items-container" id="items_container">
+
+        </ul>
+    </section>
     </main>
-    <script type="module" src="./js/index.js"></script>
+    <script src="./js/index.js"></script>
   </body>
 </html>

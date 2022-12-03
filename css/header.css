@@ -1,5 +1,15 @@
 .name {
   margin: 25px;
+  margin-right: 40px;
+}
+
+.navigation{
+  display: flex;
+  list-style: none;
+}
+
+.nav-button{
+  margin-right: 20px;
 }
 
 #search_input{
